@@ -5,15 +5,20 @@ on:
     tags:
       - 'v*'
 
-jobs:
-  publish:
-    runs-on: ubuntu-latest
-    concurrency:
-      group: npm-publish
-      cancel-in-progress: false
-    permissions:
-      contents: write
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
 
+jobs:
+  # ─── Job 1: Publish to npm under a temporary "staging" tag ───
+  publish-staging:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      channel: ${{ steps.meta.outputs.channel }}
+      is-prerelease: ${{ steps.meta.outputs.is-prerelease }}
     steps:
       - uses: actions/checkout@v4
 
@@ -24,20 +29,99 @@ jobs:
 
       - run: npm ci
 
-      - name: Detect release channel
-        id: channel
+      - name: Detect version and release channel
+        id: meta
         run: |
-          TAG=$(node -p "
+          VERSION=$(node -p "require('./package.json').version")
+          CHANNEL=$(node -p "
             const v = require('./package.json').version;
             const pre = v.split('-')[1];
             pre ? pre.replace(/[^a-zA-Z].*/g, '') || 'pre' : 'latest'
           ")
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "Publishing $(node -p "require('./package.json').version") to dist-tag: $TAG"
+          IS_PRE=$(echo "$VERSION" | grep -q '-' && echo "true" || echo "false")
 
-      - run: npm publish --tag ${{ steps.channel.outputs.tag }}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "channel=$CHANNEL" >> $GITHUB_OUTPUT
+          echo "is-prerelease=$IS_PRE" >> $GITHUB_OUTPUT
+          echo "Publishing $VERSION → staging (final tag: $CHANNEL, prerelease: $IS_PRE)"
+
+      - name: Publish to staging tag
+        run: npm publish --tag staging
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # ─── Job 2: Build & push Docker images (4 parallel) ───
+  build-containers:
+    needs: [publish-staging]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - image: job-pi-coding-agent
+            context: templates/docker/job-pi-coding-agent
+            dockerfile: templates/docker/job-pi-coding-agent/Dockerfile
+          - image: job-claude-code
+            context: templates/docker/job-claude-code
+            dockerfile: templates/docker/job-claude-code/Dockerfile
+          - image: claude-code-workspace
+            context: templates/docker/claude-code-workspace
+            dockerfile: templates/docker/claude-code-workspace/Dockerfile
+          - image: event-handler
+            context: .
+            dockerfile: templates/docker/event-handler/Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build and push ${{ matrix.image }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: stephengpope/thepopebot:${{ matrix.image }}-${{ needs.publish-staging.outputs.version }}
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}
+
+  # ─── Job 3: Promote npm staging → real channel tag ───
+  promote:
+    needs: [publish-staging, build-containers]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Promote staging to ${{ needs.publish-staging.outputs.channel }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          VERSION="${{ needs.publish-staging.outputs.version }}"
+          CHANNEL="${{ needs.publish-staging.outputs.channel }}"
+          echo "Promoting thepopebot@$VERSION → $CHANNEL"
+          npm dist-tag add "thepopebot@$VERSION" "$CHANNEL"
+          npm dist-tag rm thepopebot staging
+
+  # ─── Job 4: Create GitHub Release with LLM changelog ───
+  release:
+    needs: [publish-staging, promote]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Generate changelog with LLM
         env:
@@ -120,7 +204,33 @@ jobs:
         run: |
           TAG=${GITHUB_REF#refs/tags/}
           PRERELEASE_FLAG=""
-          if echo "$TAG" | grep -q '-'; then
+          if [ "${{ needs.publish-staging.outputs.is-prerelease }}" = "true" ]; then
             PRERELEASE_FLAG="--prerelease"
           fi
           gh release create "$TAG" $PRERELEASE_FLAG --title "$TAG" --notes-file /tmp/release_notes.md
+
+  # ─── Job 5: Clean up if Docker builds fail ───
+  cleanup-on-failure:
+    needs: [publish-staging, build-containers]
+    if: always() && needs.publish-staging.result == 'success' && needs.build-containers.result != 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Remove staging tag and unpublish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          VERSION="${{ needs.publish-staging.outputs.version }}"
+          echo "Docker builds failed — cleaning up thepopebot@$VERSION"
+
+          # Remove the staging dist-tag so it doesn't linger
+          npm dist-tag rm thepopebot staging || true
+
+          # Unpublish the version (allowed within 72h of publish)
+          npm unpublish "thepopebot@$VERSION" || true
