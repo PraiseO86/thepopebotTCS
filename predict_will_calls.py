@@ -6,7 +6,7 @@ def analyze_statewide_capacity():
     
     # 1. Load the Historical Memory
     try:
-        df = pd.read_csv('will_call_history.csv')
+       df = pd.read_csv('brain/will_call_history.csv')
     except FileNotFoundError:
         print("❌ ERROR: Could not find will_call_history.csv")
         return
