@@ -1,0 +1,19 @@
+--- 🧠 INITIALIZING NEMT WILL-CALL PREDICTOR ---
+✅ Loaded 35629 historical dispatch records.
+
+--- 📍 INDIANAPOLIS METRO SURGE ANALYSIS ---
+
+🏥 Facility: 720 Eskenazi Ave (Total Historical Returns: 761)
+   ⚠️ PEAK SURGE WINDOW: 02:00 PM - 03:00 PM
+   ♿ Wheelchair Capacity Needed: 13.4% of all trips.
+   📋 ACTION: Pre-position assets near 720 Eskenazi Ave by 02:00 PM to protect the 1-hour contractual obligation.
+
+🏥 Facility: 1719 W 10th St (Total Historical Returns: 412)
+   ⚠️ PEAK SURGE WINDOW: 09:00 AM - 10:00 AM
+   ♿ Wheelchair Capacity Needed: 27.4% of all trips.
+   📋 ACTION: Pre-position assets near 1719 W 10th St by 09:00 AM to protect the 1-hour contractual obligation.
+
+🏥 Facility: 2480 N Meridian St (Total Historical Returns: 357)
+   ⚠️ PEAK SURGE WINDOW: 04:00 PM - 05:00 PM
+   ♿ Wheelchair Capacity Needed: 20.7% of all trips.
+   📋 ACTION: Pre-position assets near 2480 N Meridian St by 04:00 PM to protect the 1-hour contractual obligation.
