@@ -1,0 +1,30 @@
+name: Build Daily Schedule
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  generate_schedule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install pandas
+
+      - name: Run AI Scheduling Engine
+        run: python generate_schedule.py
+
+      - name: Commit Schedule to Repository
+        run: |
+          git config --global user.name 'thepopebot-automation'
+          git config --global user.email 'automation@tcs-nemt.com'
+          git add reports/optimized_schedule.md
+          git diff --quiet && git diff --staged --quiet || git commit -m "docs: generate AI optimized schedule"
+          git push
