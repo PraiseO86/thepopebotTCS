@@ -348,4 +348,10 @@ Rule:
 - NoShowFeeEligibility
 - ReimbursementCode/RateTableRef
 
+## SCHEDULING CONTEXT GUIDELINES
+When generating a schedule, the automated Python engine will cross-reference `history_leg1.csv` and `history_leg2.csv`.
+1. **The 1-Hour SLA Rule:** For Leg 2 trips, the engine will utilize the full 1-hour contractual window from the `TBR time` (To Be Ready time) to bundle trips efficiently.
+2. **Urban Density Priority:** The engine must prioritize the `LCP 04 (INDIANAPOLIS)` territory first, anchoring drivers in specific Zip Codes (e.g., 46202, 46219) to eliminate deadhead miles.
+3. **Shift Constraints:** Drivers operate in 7-8 hour shifts. The bot must not schedule a pickup that would force a drop-off beyond the 8-hour mark.
+
 ---
