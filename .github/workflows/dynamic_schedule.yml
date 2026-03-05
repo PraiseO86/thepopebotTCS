@@ -1,0 +1,33 @@
+name: Generate Dynamic Schedule
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  run_scheduler:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install pandas
+
+      - name: Create Reports Folder
+        run: mkdir -p reports
+
+      - name: Run Dynamic Scheduler
+        run: python generate_dynamic_schedule.py
+
+      - name: Commit Schedule to Repository
+        run: |
+          git config --global user.name 'thepopebot-automation'
+          git config --global user.email 'automation@tcs-nemt.com'
+          git add reports/dynamic_optimized_schedule.md
+          git diff --quiet && git diff --staged --quiet || git commit -m "docs: generated dynamic driver schedule"
+          git push
