@@ -15,8 +15,8 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Dependencies
-        run: pip install pandas
+       - name: Install Dependencies
+        run: pip install pandas openpyxl
 
       - name: Create Reports Folder
         run: mkdir -p reports
