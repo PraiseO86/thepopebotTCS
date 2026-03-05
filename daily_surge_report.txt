@@ -1,2 +1,96 @@
 --- 🧠 STATEWIDE NEMT WILL-CALL PREDICTOR ---
-❌ ERROR: Could not find will_call_history.csv
+
+========================================
+📍 REGION: LCP 04 (INDIANAPOLIS)
+========================================
+
+🏥 Facility: 720 Eskenazi Ave (Historical Returns: 761)
+   ⚠️ SURGE WINDOW: 02:00 PM - 03:00 PM
+   ♿ WC Capacity Needed: 13.4%
+   📋 ACTION: Protect the 1-hour window for 720 Eskenazi Ave starting at 02:00 PM.
+
+🏥 Facility: 1719 W 10th St (Historical Returns: 412)
+   ⚠️ SURGE WINDOW: 09:00 AM - 10:00 AM
+   ♿ WC Capacity Needed: 27.4%
+   📋 ACTION: Protect the 1-hour window for 1719 W 10th St starting at 09:00 AM.
+
+🏥 Facility: 2480 N Meridian St (Historical Returns: 357)
+   ⚠️ SURGE WINDOW: 04:00 PM - 05:00 PM
+   ♿ WC Capacity Needed: 20.7%
+   📋 ACTION: Protect the 1-hour window for 2480 N Meridian St starting at 04:00 PM.
+
+========================================
+📍 REGION: LCP 01 (GARY)
+========================================
+
+🏥 Facility: 200 E 89th Ave (Historical Returns: 226)
+   ⚠️ SURGE WINDOW: 01:00 PM - 02:00 PM
+   ♿ WC Capacity Needed: 8.8%
+   📋 ACTION: Protect the 1-hour window for 200 E 89th Ave starting at 01:00 PM.
+
+🏥 Facility: 6059 Broadway (Historical Returns: 219)
+   ⚠️ SURGE WINDOW: 02:00 PM - 03:00 PM
+   ♿ WC Capacity Needed: 70.3%
+   📋 ACTION: Protect the 1-hour window for 6059 Broadway starting at 02:00 PM.
+
+🏥 Facility: 4321 Fir St (Historical Returns: 211)
+   ⚠️ SURGE WINDOW: 10:00 AM - 11:00 AM
+   ♿ WC Capacity Needed: 26.1%
+   📋 ACTION: Protect the 1-hour window for 4321 Fir St starting at 10:00 AM.
+
+========================================
+📍 REGION: LCP 03 (FORT WAYNE)
+========================================
+
+🏥 Facility: 302 E Pettit Ave (Historical Returns: 315)
+   ⚠️ SURGE WINDOW: 10:00 AM - 11:00 AM
+   ♿ WC Capacity Needed: 20.3%
+   📋 ACTION: Protect the 1-hour window for 302 E Pettit Ave starting at 10:00 AM.
+
+🏥 Facility: 3233 E Coliseum Blvd (Historical Returns: 166)
+   ⚠️ SURGE WINDOW: 09:00 AM - 10:00 AM
+   ♿ WC Capacity Needed: 8.4%
+   📋 ACTION: Protect the 1-hour window for 3233 E Coliseum Blvd starting at 09:00 AM.
+
+🏥 Facility: 2200 Randallia Dr (Historical Returns: 164)
+   ⚠️ SURGE WINDOW: 12:00 PM - 01:00 PM
+   ♿ WC Capacity Needed: 66.5%
+   📋 ACTION: Protect the 1-hour window for 2200 Randallia Dr starting at 12:00 PM.
+
+========================================
+📍 REGION: LCP 02 (SOUTH BEND)
+========================================
+
+🏥 Facility: 4350 S Ironwood Dr (Historical Returns: 139)
+   ⚠️ SURGE WINDOW: 02:00 PM - 03:00 PM
+   ♿ WC Capacity Needed: 8.6%
+   📋 ACTION: Protect the 1-hour window for 4350 S Ironwood Dr starting at 02:00 PM.
+
+🏥 Facility: 611 E Douglas Rd (Historical Returns: 134)
+   ⚠️ SURGE WINDOW: 02:00 PM - 03:00 PM
+   ♿ WC Capacity Needed: 12.7%
+   📋 ACTION: Protect the 1-hour window for 611 E Douglas Rd starting at 02:00 PM.
+
+🏥 Facility: 1153 Northside Blvd (Historical Returns: 109)
+   ⚠️ SURGE WINDOW: 12:00 PM - 01:00 PM
+   ♿ WC Capacity Needed: 0.0%
+   📋 ACTION: Protect the 1-hour window for 1153 Northside Blvd starting at 12:00 PM.
+
+========================================
+📍 REGION: LCP 12 (SOUTHEAST)
+========================================
+
+🏥 Facility: 411 W Tipton St (Historical Returns: 91)
+   ⚠️ SURGE WINDOW: 09:00 AM - 10:00 AM
+   ♿ WC Capacity Needed: 72.5%
+   📋 ACTION: Protect the 1-hour window for 411 W Tipton St starting at 09:00 AM.
+
+🏥 Facility: 1919 State St (Historical Returns: 72)
+   ⚠️ SURGE WINDOW: 02:00 PM - 03:00 PM
+   ♿ WC Capacity Needed: 33.3%
+   📋 ACTION: Protect the 1-hour window for 1919 State St starting at 02:00 PM.
+
+🏥 Facility: 3102 Middle Rd (Historical Returns: 68)
+   ⚠️ SURGE WINDOW: 04:00 PM - 05:00 PM
+   ♿ WC Capacity Needed: 76.5%
+   📋 ACTION: Protect the 1-hour window for 3102 Middle Rd starting at 04:00 PM.
