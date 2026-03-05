@@ -1,0 +1,37 @@
+name: Morning Will-Call Predictor
+
+# 1. THE TRIGGERS
+on:
+  schedule:
+    # Runs at 10:00 UTC every day (which is 6:00 AM Eastern Time in IN/KY)
+    - cron: '0 10 * * *'
+  workflow_dispatch: 
+    # This allows you to click a "Run" button in GitHub manually
+
+# 2. THE ACTION
+jobs:
+  analyze_capacity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install pandas
+
+      - name: Run Will-Call Predictor
+        run: python predict_will_calls.py > daily_surge_report.txt
+
+      - name: Commit Report to Memory
+        run: |
+          git config --global user.name 'thepopebot-automation'
+          git config --global user.email 'automation@tcs-nemt.com'
+          git add daily_surge_report.txt
+          # Only commit if there are changes
+          git diff --quiet && git diff --staged --quiet || git commit -m "docs: auto-generated daily surge report"
+          git push
