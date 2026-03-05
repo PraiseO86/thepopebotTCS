@@ -9,11 +9,21 @@ def build_dynamic_schedule():
     MAX_DRIVERS = 80
     SHIFT_HOURS = 8
     
-    # 1. Load Data
+# 1. Load Data (Multi-Sheet Excel)
     try:
-        trips_df = pd.read_csv('daily_manifests/manifest_tomorrow.csv')
+        # Load the entire Excel workbook
+        excel_path = 'daily_manifests/manifest_tomorrow.xlsx'
+        
+        # Read the first sheet (Leg 1s) and second sheet (Leg 2s)
+        leg1_df = pd.read_excel(excel_path, sheet_name=0)
+        leg2_df = pd.read_excel(excel_path, sheet_name=1)
+        
+        # Combine them into one master list for the AI to process
+        trips_df = pd.concat([leg1_df, leg2_df], ignore_index=True)
+        print(f"✅ Successfully merged {len(leg1_df)} Leg 1s and {len(leg2_df)} Leg 2s.")
+        
     except Exception as e:
-        print(f"❌ ERROR: Missing manifest_tomorrow.csv in daily_manifests/ folder - {e}")
+        print(f"❌ ERROR: Missing manifest_tomorrow.xlsx in daily_manifests/ folder - {e}")
         return
 
     # 2. Clean Manifest Data
